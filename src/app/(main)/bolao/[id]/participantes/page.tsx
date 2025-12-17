@@ -85,7 +85,7 @@ export default function ParticipantesPage() {
           .from("jogos")
           .select("id, nome, numeros, status, created_at")
           .eq("bolao_id", bolaoId)
-          .eq("status", "validado")
+          .eq("status", "pago")
           .order("created_at", { ascending: true });
 
         setJogos(jogosData || []);
@@ -292,6 +292,57 @@ export default function ParticipantesPage() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Distribuição do Prêmio */}
+        <Card className="mb-6 border-green-200 bg-gradient-to-br from-green-50 to-emerald-50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-green-800">
+              <Trophy className="w-5 h-5" />
+              Distribuição do Prêmio
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center pb-3 border-b">
+                <span className="font-semibold text-gray-900">Prêmio Total:</span>
+                <span className="text-2xl font-bold text-green-700">
+                  {formatarDinheiro(jogos.length * bolao.valor_cota)}
+                </span>
+              </div>
+
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between items-center p-2 bg-white rounded">
+                  <span className="text-gray-700">🏆 10 acertos (1º lugar)</span>
+                  <span className="font-semibold text-green-700">
+                    70% = {formatarDinheiro((jogos.length * bolao.valor_cota) * 0.7 * 0.9)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-white rounded">
+                  <span className="text-gray-700">🥈 9 acertos (2º lugar)</span>
+                  <span className="font-semibold text-green-700">
+                    10% = {formatarDinheiro((jogos.length * bolao.valor_cota) * 0.1 * 0.9)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-white rounded">
+                  <span className="text-gray-700">🥉 Menos acertos (3º lugar)</span>
+                  <span className="font-semibold text-green-700">
+                    20% = {formatarDinheiro((jogos.length * bolao.valor_cota) * 0.2 * 0.9)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-gray-100 rounded">
+                  <span className="text-gray-700">👤 Taxa do organizador</span>
+                  <span className="font-semibold text-gray-700">
+                    10% = {formatarDinheiro((jogos.length * bolao.valor_cota) * 0.1)}
+                  </span>
+                </div>
+              </div>
+
+              <p className="text-xs text-gray-600 mt-3 pt-3 border-t">
+                💡 Em caso de empate, o prêmio será dividido igualmente entre os ganhadores
+              </p>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Aviso sobre números */}
         {!mostrarNumeros && (

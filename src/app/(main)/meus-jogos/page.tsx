@@ -24,14 +24,13 @@ import { createClient } from "@/lib/supabase/client";
 interface Bolao {
   id: string;
   nome: string;
-  numero: number;
   status: string;
   data_sorteio: string;
 }
 
 interface Jogo {
   id: string;
-  nome_participante: string;
+  nome: string;
   numeros: number[];
   valor: number;
   status: string;
@@ -85,12 +84,12 @@ export default function MeusJogosPage() {
         .from("jogos")
         .select(`
           id,
-          nome_participante,
+          nome,
           numeros,
           valor,
           status,
           created_at,
-          bolao:boloes(id, nome, numero, status, data_sorteio)
+          bolao:boloes(id, nome, status, data_sorteio)
         `)
         .eq("whatsapp", numeroLimpo)
         .order("created_at", { ascending: false });
@@ -111,16 +110,7 @@ export default function MeusJogosPage() {
     }
   };
 
-  // Verificar se pode mostrar números
-  const podeVerNumeros = (bolao: Bolao | null) => {
-    if (!bolao) return false;
-    if (bolao.status === "encerrado" || bolao.status === "sorteado") {
-      return true;
-    }
-    const agora = new Date();
-    const dataSorteio = new Date(bolao.data_sorteio);
-    return agora >= dataSorteio;
-  };
+
 
   const formatarData = (data: string) => {
     return new Date(data).toLocaleDateString("pt-BR", {
@@ -134,7 +124,7 @@ export default function MeusJogosPage() {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "validado":
+      case "pago":
         return (
           <Badge className="bg-green-100 text-green-700">
             <CheckCircle2 className="w-3 h-3 mr-1" />
@@ -163,10 +153,10 @@ export default function MeusJogosPage() {
   // Estatísticas
   const stats = {
     total: jogos.length,
-    confirmados: jogos.filter((j) => j.status === "validado").length,
+    confirmados: jogos.filter((j) => j.status === "pago").length,
     pendentes: jogos.filter((j) => j.status === "pendente").length,
     investido: jogos
-      .filter((j) => j.status === "validado")
+      .filter((j) => j.status === "pago")
       .reduce((acc, j) => acc + j.valor, 0),
   };
 
@@ -286,106 +276,77 @@ export default function MeusJogosPage() {
 
                 {/* Lista de jogos */}
                 <div className="space-y-4">
-                  {jogos.map((jogo) => {
-                    const mostrarNumeros = podeVerNumeros(jogo.bolao);
+                  {jogos.map((jogo) => (
+                    <Card key={jogo.id} className="overflow-hidden">
+                      {/* Header do card */}
+                      <div className="bg-gray-50 px-4 py-3 border-b flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium text-gray-700">
+                            {jogo.bolao?.nome || "Bolão"}
+                          </span>
+                        </div>
+                        {getStatusBadge(jogo.status)}
+                      </div>
 
-                    return (
-                      <Card key={jogo.id} className="overflow-hidden">
-                        {/* Header do card */}
-                        <div className="bg-gray-50 px-4 py-3 border-b flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            {jogo.bolao && (
-                              <Badge variant="outline">
-                                #{jogo.bolao.numero}
-                              </Badge>
-                            )}
-                            <span className="font-medium text-gray-700">
-                              {jogo.bolao?.nome || "Bolão"}
-                            </span>
-                          </div>
-                          {getStatusBadge(jogo.status)}
+                      <CardContent className="p-4">
+                        {/* Info */}
+                        <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+                          <span className="flex items-center gap-1">
+                            <Calendar className="w-4 h-4" />
+                            {formatarData(jogo.created_at)}
+                          </span>
+                          <span className="font-medium text-green-600">
+                            {formatarDinheiro(jogo.valor)}
+                          </span>
                         </div>
 
-                        <CardContent className="p-4">
-                          {/* Info */}
-                          <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
-                            <span className="flex items-center gap-1">
-                              <Calendar className="w-4 h-4" />
-                              {formatarData(jogo.created_at)}
-                            </span>
-                            <span className="font-medium text-green-600">
-                              {formatarDinheiro(jogo.valor)}
+                        {/* Números */}
+                        <div>
+                          <p className="text-sm text-gray-500 mb-2 flex items-center gap-1">
+                            <Ticket className="w-4 h-4" />
+                            Seus números:
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            {jogo.numeros.map((num) => (
+                              <div
+                                key={num}
+                                className="w-9 h-9 bg-green-500 text-white rounded-full flex items-center justify-center font-bold text-sm"
+                              >
+                                {num.toString().padStart(2, "0")}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Data do sorteio */}
+                        {jogo.bolao && (
+                          <div className="mt-4 pt-4 border-t text-sm text-gray-500">
+                            Sorteio:{" "}
+                            <span className="font-medium">
+                              {new Date(jogo.bolao.data_sorteio).toLocaleDateString(
+                                "pt-BR",
+                                {
+                                  weekday: "long",
+                                  day: "2-digit",
+                                  month: "long",
+                                }
+                              )}
                             </span>
                           </div>
+                        )}
 
-                          {/* Números */}
-                          <div>
-                            <p className="text-sm text-gray-500 mb-2 flex items-center gap-1">
-                              {mostrarNumeros ? (
-                                <>
-                                  <Ticket className="w-4 h-4" />
-                                  Seus números:
-                                </>
-                              ) : (
-                                <>
-                                  <Lock className="w-4 h-4" />
-                                  Números ocultos até o sorteio
-                                </>
-                              )}
+                        {/* Aviso de pendente */}
+                        {jogo.status === "pendente" && (
+                          <div className="mt-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                            <p className="text-sm text-yellow-800">
+                              ⚠️ Seu jogo ainda não foi confirmado. Efetue o
+                              pagamento e envie o comprovante.
                             </p>
-                            <div className="flex flex-wrap gap-2">
-                              {mostrarNumeros ? (
-                                jogo.numeros.map((num) => (
-                                  <div
-                                    key={num}
-                                    className="w-9 h-9 bg-green-500 text-white rounded-full flex items-center justify-center font-bold text-sm"
-                                  >
-                                    {num.toString().padStart(2, "0")}
-                                  </div>
-                                ))
-                              ) : (
-                                Array.from({ length: 10 }).map((_, i) => (
-                                  <div
-                                    key={i}
-                                    className="w-9 h-9 bg-gray-200 rounded-full flex items-center justify-center"
-                                  >
-                                    <Lock className="w-3 h-3 text-gray-400" />
-                                  </div>
-                                ))
-                              )}
-                            </div>
                           </div>
-
-                          {/* Data do sorteio */}
-                          {jogo.bolao && (
-                            <div className="mt-4 pt-4 border-t text-sm text-gray-500">
-                              Sorteio:{" "}
-                              <span className="font-medium">
-                                {new Date(jogo.bolao.data_sorteio).toLocaleDateString(
-                                  "pt-BR",
-                                  {
-                                    weekday: "long",
-                                    day: "2-digit",
-                                    month: "long",
-                                  }
-                                )}
-                              </span>
-                            </div>
-                          )}
-
-                          {/* Aviso de pendente */}
-                          {jogo.status === "pendente" && (
-                            <div className="mt-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-                              <p className="text-sm text-yellow-800">
-                                ⚠️ Seu jogo ainda não foi confirmado. Efetue o
-                                pagamento e envie o comprovante.
-                              </p>
-                            </div>
-                          )}
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
+                        )}
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
 
                 {/* CTA para novo jogo */}

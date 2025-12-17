@@ -120,6 +120,7 @@ export default function JogarPage() {
       const data = await response.json();
 
       // Redirecionar para página de pagamento
+      console.log("Redirecionando para pagamento. Jogo ID:", data.jogoId);
       router.push(`/pagamento/${data.jogoId}`);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Erro ao processar jogo. Tente novamente.");
@@ -166,7 +167,7 @@ export default function JogarPage() {
                 Nenhum bolão ativo
               </h2>
               <p className="text-gray-600 mb-6">
-                No momento não há bolões abertos para participação. 
+                No momento não há bolões abertos para participação.
                 Volte mais tarde!
               </p>
               <Button
@@ -215,11 +216,10 @@ export default function JogarPage() {
             {["dados", "numeros", "confirmacao"].map((step, index) => (
               <div
                 key={step}
-                className={`h-1 flex-1 transition-colors ${
-                  ["dados", "numeros", "confirmacao"].indexOf(etapa) >= index
-                    ? "bg-yellow-400"
-                    : "bg-green-800"
-                }`}
+                className={`h-1 flex-1 transition-colors ${["dados", "numeros", "confirmacao"].indexOf(etapa) >= index
+                  ? "bg-yellow-400"
+                  : "bg-green-800"
+                  }`}
               />
             ))}
           </div>

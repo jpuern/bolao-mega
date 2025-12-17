@@ -33,7 +33,7 @@ async function buscarTotalJogos(bolaoId: string) {
     .from("jogos")
     .select("*", { count: "exact", head: true })
     .eq("bolao_id", bolaoId)
-    .eq("status", "validado");
+    .eq("status", "pago");
 
   return count || 0;
 }
@@ -47,48 +47,52 @@ export default async function HomePage() {
   // Buscar total de jogos se houver bolão ativo
   const totalJogos = bolaoAtivo ? await buscarTotalJogos(bolaoAtivo.id) : 0;
 
-  const valorJogo = bolaoAtivo?.valor_jogo || 50;
+  // Calcular prêmio do bolão (total arrecadado)
+  const valorJogo = bolaoAtivo?.valor_cota || 50;
+  const premioTotal = totalJogos * valorJogo;
   const temBolaoAtivo = !!bolaoAtivo;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-600 to-green-800">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="container mx-auto px-4 py-6">
-        <nav className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-3xl">🎱</span>
-            <span className="text-2xl font-bold text-white">Mega de Ouro</span>
-          </div>
-          <div className="flex gap-3">
-            <Link href="/meus-jogos">
-              <Button variant="ghost" className="text-white hover:bg-white/20">
-                Meus Jogos
-              </Button>
-            </Link>
-            <Link href="/jogar">
-              <Button className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold">
-                Jogar Agora
-              </Button>
-            </Link>
-          </div>
-        </nav>
+      <header className="bg-gradient-to-r from-green-600 to-green-700 shadow-md">
+        <div className="container mx-auto px-4 py-6">
+          <nav className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-3xl">🎱</span>
+              <span className="text-2xl font-bold text-white">Mega de Ouro</span>
+            </div>
+            <div className="flex gap-3">
+              <Link href="/meus-jogos">
+                <Button variant="ghost" className="text-white hover:bg-white/20">
+                  Meus Jogos
+                </Button>
+              </Link>
+              <Link href="/jogar">
+                <Button className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold">
+                  Jogar Agora
+                </Button>
+              </Link>
+            </div>
+          </nav>
+        </div>
       </header>
 
       {/* Hero */}
       <main className="container mx-auto px-4 py-12">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-4">
             Bolão Online da
-            <span className="text-yellow-400"> Mega-Sena</span>
+            <span className="text-green-600"> Mega-Sena</span>
           </h1>
-          <p className="text-xl text-green-100 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Participe do nosso bolão, escolha seus números e concorra a prêmios
             incríveis. Simples, seguro e transparente.
           </p>
         </div>
 
         {/* Card Principal */}
-        <Card className="max-w-xl mx-auto shadow-2xl">
+        <Card className="max-w-xl mx-auto shadow-2xl bg-white border-green-200">
           <CardContent className="p-8">
             <div className="text-center space-y-6">
               {temBolaoAtivo ? (
@@ -99,10 +103,11 @@ export default async function HomePage() {
                   </div>
 
                   <div>
-                    <p className="text-gray-600">{bolaoAtivo.nome}</p>
+                    <p className="text-gray-600 text-sm font-medium">Bolão Ativo</p>
                     <p className="text-4xl font-bold text-gray-900">
                       Bolão #{bolaoAtivo.numero}
                     </p>
+                    <p className="text-gray-600 text-sm mt-1">{bolaoAtivo.nome}</p>
                   </div>
 
                   {bolaoAtivo.data_encerramento && (
@@ -111,10 +116,13 @@ export default async function HomePage() {
                     />
                   )}
 
-                  <div className="pt-4 border-t">
-                    <p className="text-gray-600">Prêmio Estimado</p>
+                  <div className="pt-4 border-t border-gray-200">
+                    <p className="text-gray-700 font-medium">Prêmio Total do Bolão</p>
                     <p className="text-3xl font-bold text-green-600">
-                      {formatarDinheiro(sorteio?.valorAcumulado || 0)}
+                      {formatarDinheiro(premioTotal)}
+                    </p>
+                    <p className="text-gray-500 text-xs mt-1">
+                      {totalJogos} {totalJogos === 1 ? 'participante' : 'participantes'}
                     </p>
                   </div>
 
@@ -131,7 +139,7 @@ export default async function HomePage() {
                   <Link href={`/bolao/${bolaoAtivo.id}/participantes`} className="block">
                     <Button
                       variant="outline"
-                      className="w-full"
+                      className="w-full bg-white text-green-700 border-2 border-white hover:bg-green-50 hover:border-green-100 font-semibold transition-all"
                     >
                       <Users className="w-4 h-4 mr-2" />
                       Ver participantes {totalJogos > 0 && `(${totalJogos})`}
@@ -179,9 +187,9 @@ export default async function HomePage() {
         {/* Último Resultado */}
         {sorteio && (
           <div className="max-w-xl mx-auto mt-8">
-            <Card className="bg-white/10 border-white/20">
+            <Card className="bg-white border-gray-200">
               <CardContent className="p-6">
-                <p className="text-green-100 text-center mb-4">
+                <p className="text-gray-700 text-center mb-4 font-medium">
                   Último Resultado - Concurso {sorteio.concurso}
                 </p>
                 <div className="flex justify-center gap-2 flex-wrap">
@@ -225,12 +233,12 @@ export default async function HomePage() {
           ].map((feature) => (
             <Card
               key={feature.titulo}
-              className="bg-white/10 border-white/20 text-white"
+              className="bg-white border-gray-200 hover:shadow-lg transition-shadow"
             >
               <CardContent className="p-6 text-center">
-                <feature.icon className="w-10 h-10 mx-auto mb-3 text-yellow-400" />
-                <h3 className="font-bold text-lg mb-2">{feature.titulo}</h3>
-                <p className="text-green-100 text-sm">{feature.descricao}</p>
+                <feature.icon className="w-10 h-10 mx-auto mb-3 text-green-600" />
+                <h3 className="font-bold text-lg mb-2 text-gray-900">{feature.titulo}</h3>
+                <p className="text-gray-600 text-sm">{feature.descricao}</p>
               </CardContent>
             </Card>
           ))}
@@ -238,8 +246,8 @@ export default async function HomePage() {
       </main>
 
       {/* Footer */}
-      <footer className="container mx-auto px-4 py-8 mt-12 border-t border-white/20">
-        <p className="text-center text-green-100 text-sm">
+      <footer className="container mx-auto px-4 py-8 mt-12 border-t border-gray-200">
+        <p className="text-center text-gray-600 text-sm">
           © 2025 Mega de Ouro. Todos os direitos reservados.
         </p>
       </footer>

@@ -1,5 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/server";
+import fs from 'fs';
+import path from 'path';
+
+function logToFile(message: string) {
+  const logPath = path.join(process.cwd(), 'debug.log');
+  const timestamp = new Date().toISOString();
+  fs.appendFileSync(logPath, `[${timestamp}] ${message}\n`);
+}
 
 export async function GET(
   request: NextRequest,
@@ -7,19 +15,30 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const supabase = await createClient();
+    let supabase;
+    try {
+      supabase = createServiceClient();
+    } catch (error) {
+      console.error("Erro ao criar cliente Supabase:", error);
+      return NextResponse.json(
+        { error: "Erro de configuração do servidor" },
+        { status: 500 }
+      );
+    }
 
     // Buscar jogo com dados do bolão
+    logToFile(`[GET Jogo] Buscando ID: ${id}`);
     const { data: jogo, error } = await supabase
       .from("jogos")
       .select(`
         *,
-        bolao:boloes(id, nome, numero)
+        bolao:boloes(id, nome)
       `)
       .eq("id", id)
       .single();
 
     if (error || !jogo) {
+      logToFile(`[GET Jogo] Erro ou não encontrado. ID: ${id}. Erro: ${JSON.stringify(error)}`);
       return NextResponse.json(
         { error: "Jogo não encontrado" },
         { status: 404 }
@@ -44,7 +63,7 @@ export async function GET(
 
     return NextResponse.json({
       id: jogo.id,
-      nome: jogo.nome_participante,
+      nome: jogo.nome,
       whatsapp: jogo.whatsapp,
       numeros: jogo.numeros,
       valor: jogo.valor,

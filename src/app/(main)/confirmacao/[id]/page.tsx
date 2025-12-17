@@ -28,7 +28,6 @@ interface DadosJogo {
   bolao: {
     id: string;
     nome: string;
-    numero: number;
   };
 }
 
@@ -49,8 +48,8 @@ export default function ConfirmacaoPage() {
           const data = await response.json();
           setJogo(data);
 
-          // Se não está validado, redireciona para pagamento
-          if (data.status !== "validado") {
+          // Se não está pago, redireciona para pagamento
+          if (data.status !== "pago") {
             router.push(`/pagamento/${jogoId}`);
           }
         } else {
@@ -96,8 +95,8 @@ export default function ConfirmacaoPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-green-500 to-green-600 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-white" />
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-green-600" />
       </div>
     );
   }
@@ -120,7 +119,7 @@ export default function ConfirmacaoPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-500 to-green-600">
+    <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-lg mx-auto text-center">
           {/* Ícone de sucesso */}
@@ -128,10 +127,10 @@ export default function ConfirmacaoPage() {
             <CheckCircle2 className="w-14 h-14 text-green-500" />
           </div>
 
-          <h1 className="text-3xl font-bold text-white mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Jogo Confirmado! 🎉
           </h1>
-          <p className="text-green-100 text-lg mb-8">
+          <p className="text-gray-600 text-lg mb-8">
             Pagamento recebido com sucesso!
           </p>
 
@@ -140,19 +139,16 @@ export default function ConfirmacaoPage() {
             <CardContent className="p-6">
               <div className="text-left space-y-4">
                 {/* Bolão */}
-                <div className="bg-green-50 rounded-lg p-3 text-center">
+                <div className="bg-green-100 border border-green-200 rounded-lg p-3 text-center">
                   <p className="text-green-800 font-medium">
                     {jogo.bolao.nome}
-                  </p>
-                  <p className="text-green-600 text-sm">
-                    Bolão #{jogo.bolao.numero}
                   </p>
                 </div>
 
                 {/* Código */}
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-500 text-sm">Código do jogo:</span>
-                  <span className="font-mono font-bold text-green-600">
+                  <span className="text-gray-700 text-sm font-medium">Código do jogo:</span>
+                  <span className="font-mono font-bold text-green-700">
                     #{jogoId.slice(-8).toUpperCase()}
                   </span>
                 </div>
@@ -162,14 +158,14 @@ export default function ConfirmacaoPage() {
                 {/* Dados do participante */}
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-sm">
-                    <User className="w-4 h-4 text-gray-400" />
-                    <span className="text-gray-500">Nome:</span>
-                    <span className="font-medium ml-auto">{jogo.nome}</span>
+                    <User className="w-4 h-4 text-gray-600" />
+                    <span className="text-gray-700 font-medium">Nome:</span>
+                    <span className="font-semibold ml-auto text-gray-900">{jogo.nome}</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm">
-                    <Calendar className="w-4 h-4 text-gray-400" />
-                    <span className="text-gray-500">Data:</span>
-                    <span className="font-medium ml-auto">
+                    <Calendar className="w-4 h-4 text-gray-600" />
+                    <span className="text-gray-700 font-medium">Data:</span>
+                    <span className="font-semibold ml-auto text-gray-900">
                       {formatarData(jogo.criadoEm)}
                     </span>
                   </div>
@@ -179,7 +175,7 @@ export default function ConfirmacaoPage() {
 
                 {/* Números */}
                 <div>
-                  <p className="text-gray-500 text-sm mb-3">Seus números da sorte:</p>
+                  <p className="text-gray-700 text-sm font-medium mb-3">Seus números da sorte:</p>
                   <CartelaNumeros numeros={jogo.numeros} />
                 </div>
 
@@ -187,16 +183,16 @@ export default function ConfirmacaoPage() {
 
                 {/* Valor */}
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-500">Valor pago:</span>
-                  <span className="font-bold text-green-600 text-lg">
+                  <span className="text-gray-700 font-medium">Valor pago:</span>
+                  <span className="font-bold text-green-700 text-lg">
                     {formatarDinheiro(jogo.valor)}
                   </span>
                 </div>
 
                 {/* Status */}
-                <div className="bg-green-100 rounded-lg p-3 flex items-center justify-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-green-600" />
-                  <span className="text-green-800 font-medium">
+                <div className="bg-green-100 border border-green-200 rounded-lg p-3 flex items-center justify-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-green-700" />
+                  <span className="text-green-800 font-semibold">
                     Pagamento confirmado
                   </span>
                 </div>
@@ -205,9 +201,9 @@ export default function ConfirmacaoPage() {
           </Card>
 
           {/* Aviso WhatsApp */}
-          <Card className="mb-6 bg-white/10 border-white/20">
+          <Card className="mb-6 bg-blue-50 border-blue-200">
             <CardContent className="p-4">
-              <p className="text-white text-sm">
+              <p className="text-blue-800 text-sm">
                 📱 Você receberá uma confirmação no WhatsApp cadastrado
               </p>
             </CardContent>
@@ -216,7 +212,7 @@ export default function ConfirmacaoPage() {
           {/* Botões */}
           <div className="space-y-3">
             <Button
-              className="w-full h-14 bg-white text-green-600 hover:bg-green-50 font-bold"
+              className="w-full h-14 bg-green-600 text-white hover:bg-green-700 font-bold"
               onClick={compartilhar}
             >
               <Share2 className="w-5 h-5 mr-2" />
@@ -224,8 +220,7 @@ export default function ConfirmacaoPage() {
             </Button>
 
             <Button
-              variant="outline"
-              className="w-full h-14 border-white text-white hover:bg-white/20"
+              className="w-full h-14 bg-yellow-500 hover:bg-yellow-400 text-black font-bold"
               onClick={() => router.push("/jogar")}
             >
               🎲 Fazer outro jogo
@@ -233,7 +228,7 @@ export default function ConfirmacaoPage() {
 
             <Button
               variant="ghost"
-              className="w-full h-12 text-white/80 hover:text-white hover:bg-white/10"
+              className="w-full h-12 text-gray-600 hover:text-gray-900 hover:bg-gray-100"
               onClick={() => router.push("/")}
             >
               <Home className="w-5 h-5 mr-2" />
@@ -242,7 +237,7 @@ export default function ConfirmacaoPage() {
           </div>
 
           {/* Boa sorte */}
-          <p className="text-white/80 text-sm mt-8">
+          <p className="text-gray-600 text-sm mt-8">
             🍀 Boa sorte! O resultado será divulgado após o sorteio oficial da Mega-Sena.
           </p>
         </div>

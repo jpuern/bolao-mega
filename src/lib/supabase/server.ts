@@ -28,13 +28,19 @@ export async function createClient() {
 
 // Cliente com service role (para webhooks/admin)
 export function createServiceClient() {
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!serviceRoleKey) {
+    throw new Error("Erro de configuração: SUPABASE_SERVICE_ROLE_KEY não definida");
+  }
+
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    serviceRoleKey,
     {
       cookies: {
         getAll: () => [],
-        setAll: () => {},
+        setAll: () => { },
       },
     }
   );

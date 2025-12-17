@@ -86,7 +86,7 @@ export default async function AdminDashboardPage() {
                   {stats.totalJogos}
                 </p>
                 <p className="text-xs text-gray-500 mt-1">
-                  {stats.jogosValidados} validados
+                  {stats.jogosValidados} pagos
                 </p>
               </div>
               <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
@@ -167,15 +167,14 @@ export default async function AdminDashboardPage() {
                   >
                     <div className="flex items-center gap-4">
                       <div
-                        className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                          jogo.status === "validado"
+                        className={`w-10 h-10 rounded-full flex items-center justify-center ${jogo.status === "pago"
                             ? "bg-green-100"
                             : jogo.status === "pendente"
-                            ? "bg-yellow-100"
-                            : "bg-red-100"
-                        }`}
+                              ? "bg-yellow-100"
+                              : "bg-red-100"
+                          }`}
                       >
-                        {jogo.status === "validado" ? (
+                        {jogo.status === "pago" ? (
                           <CheckCircle2 className="w-5 h-5 text-green-600" />
                         ) : jogo.status === "pendente" ? (
                           <Clock className="w-5 h-5 text-yellow-600" />
@@ -199,14 +198,14 @@ export default async function AdminDashboardPage() {
                       </p>
                       <Badge
                         variant={
-                          jogo.status === "validado"
+                          jogo.status === "pago"
                             ? "default"
                             : jogo.status === "pendente"
-                            ? "secondary"
-                            : "destructive"
+                              ? "secondary"
+                              : "destructive"
                         }
                         className={
-                          jogo.status === "validado"
+                          jogo.status === "pago"
                             ? "bg-green-100 text-green-800"
                             : ""
                         }

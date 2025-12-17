@@ -29,7 +29,6 @@ interface DadosJogo {
   bolao: {
     id: string;
     nome: string;
-    numero: number;
   };
   pix: {
     qrCode: string;
@@ -58,8 +57,8 @@ export default function PagamentoPage() {
           const data = await response.json();
           setJogo(data);
 
-          // Se já está validado, redireciona para confirmação
-          if (data.status === "validado") {
+          // Se já está pago, redireciona para confirmação
+          if (data.status === "pago") {
             router.push(`/confirmacao/${jogoId}`);
           }
         } else {
@@ -181,17 +180,15 @@ export default function PagamentoPage() {
         <div className="max-w-lg mx-auto space-y-6">
           {/* Timer */}
           <Card
-            className={`border ${
-              expirado
-                ? "border-red-200 bg-red-50"
-                : "border-yellow-200 bg-yellow-50"
-            }`}
+            className={`border ${expirado
+              ? "border-red-200 bg-red-50"
+              : "border-yellow-200 bg-yellow-50"
+              }`}
           >
             <CardContent className="p-4">
               <div
-                className={`flex items-center justify-center gap-2 ${
-                  expirado ? "text-red-800" : "text-yellow-800"
-                }`}
+                className={`flex items-center justify-center gap-2 ${expirado ? "text-red-800" : "text-yellow-800"
+                  }`}
               >
                 <Clock className="w-5 h-5" />
                 <span>

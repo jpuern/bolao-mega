@@ -48,9 +48,16 @@ export async function buscarBolaoAtivo() {
 export async function criarBolao(dados: BolaoFormData) {
   const supabase = createClient();
 
+  // Mapear valor_jogo para valor_cota (nome da coluna no banco)
+  const { valor_jogo, ...resto } = dados;
+  const dadosParaBanco = {
+    ...resto,
+    valor_cota: valor_jogo,
+  };
+
   const { data, error } = await supabase
     .from("boloes")
-    .insert([dados])
+    .insert([dadosParaBanco])
     .select()
     .single();
 
@@ -62,9 +69,15 @@ export async function criarBolao(dados: BolaoFormData) {
 export async function atualizarBolao(id: string, dados: Partial<BolaoFormData>) {
   const supabase = createClient();
 
+  // Mapear valor_jogo para valor_cota se presente
+  const { valor_jogo, ...resto } = dados;
+  const dadosParaBanco = valor_jogo !== undefined
+    ? { ...resto, valor_cota: valor_jogo }
+    : resto;
+
   const { data, error } = await supabase
     .from("boloes")
-    .update({ ...dados, updated_at: new Date().toISOString() })
+    .update({ ...dadosParaBanco, updated_at: new Date().toISOString() })
     .eq("id", id)
     .select()
     .single();

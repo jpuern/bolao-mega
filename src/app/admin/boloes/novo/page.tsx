@@ -16,7 +16,7 @@ export default function NovoBolaoPage() {
   const [form, setForm] = useState<BolaoFormData>({
     nome: "",
     numero: 1,
-    valor_jogo: 5,
+    valor_jogo: 50,
     taxa_organizador: 10,
     data_inicio: "",
     data_encerramento: "",

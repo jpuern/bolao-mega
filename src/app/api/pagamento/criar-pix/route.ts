@@ -1,10 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/server";
 import { CONFIG } from "@/constants";
+import fs from 'fs';
+import path from 'path';
+
+function logToFile(message: string) {
+  const logPath = path.join(process.cwd(), 'debug.log');
+  const timestamp = new Date().toISOString();
+  fs.appendFileSync(logPath, `[${timestamp}] ${message}\n`);
+}
 
 export async function POST(request: NextRequest) {
+  logToFile("[Criar PIX] Requisição recebida!");
   try {
     const body = await request.json();
+    logToFile(`[Criar PIX] Body: ${JSON.stringify(body)}`);
     const { bolaoId, nome, whatsapp, numeros, valor } = body;
 
     // Validações básicas
@@ -36,7 +46,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const supabase = await createClient();
+    let supabase;
+    try {
+      supabase = createServiceClient();
+    } catch (error) {
+      console.error("Erro ao criar cliente Supabase:", error);
+      return NextResponse.json(
+        { error: "Erro de configuração do servidor" },
+        { status: 500 }
+      );
+    }
 
     // Verificar se o bolão existe e está ativo
     const { data: bolao, error: bolaoError } = await supabase
@@ -96,6 +115,8 @@ export async function POST(request: NextRequest) {
       .update({ payment_id: `PIX-${jogo.id}` })
       .eq("id", jogo.id);
 
+    logToFile(`[Criar PIX] Jogo criado com sucesso. ID: ${jogo.id}`);
+
     return NextResponse.json({
       success: true,
       jogoId: jogo.id,
@@ -115,6 +136,6 @@ export async function POST(request: NextRequest) {
 function gerarPixCopiaECola(chave: string, valor: number, txid: string): string {
   // Este é um código simplificado - em produção use uma lib como 'pix-utils'
   const valorFormatado = valor.toFixed(2).replace(".", "");
-  
+
   return `00020126580014br.gov.bcb.pix0136${chave}5204000053039865404${valorFormatado}5802BR5913BOLAO MEGA6008BRASILIA62070503***${txid.slice(-8)}6304`;
 }

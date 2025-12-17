@@ -34,32 +34,32 @@ export async function buscarEstatisticasGerais(): Promise<EstatisticasGerais> {
   // Buscar jogos
   const { data: jogos } = await supabase
     .from("jogos")
-    .select("id, status, valor, created_at, pago_em");
+    .select("id, status, valor, created_at");
 
   const totalBoloes = boloes?.length || 0;
   const boloesAtivos = boloes?.filter((b) => b.status === "ativo").length || 0;
 
   const totalJogos = jogos?.length || 0;
-  const jogosValidados = jogos?.filter((j) => j.status === "validado").length || 0;
+  const jogosValidados = jogos?.filter((j) => j.status === "pago").length || 0;
   const jogosPendentes = jogos?.filter((j) => j.status === "pendente").length || 0;
 
   const totalArrecadado = jogos
-    ?.filter((j) => j.status === "validado")
+    ?.filter((j) => j.status === "pago")
     .reduce((acc, j) => acc + (j.valor || 0), 0) || 0;
 
-  // Arrecadado hoje
+  // Arrecadado hoje (usando created_at)
   const hoje = new Date();
   hoje.setHours(0, 0, 0, 0);
 
   const arrecadadoHoje = jogos
     ?.filter((j) => {
-      if (j.status !== "validado" || !j.pago_em) return false;
-      const pagoEm = new Date(j.pago_em);
-      return pagoEm >= hoje;
+      if (j.status !== "pago") return false;
+      const criadoEm = new Date(j.created_at);
+      return criadoEm >= hoje;
     })
     .reduce((acc, j) => acc + (j.valor || 0), 0) || 0;
 
-  return {
+  const stats = {
     totalBoloes,
     boloesAtivos,
     totalJogos,
@@ -68,6 +68,12 @@ export async function buscarEstatisticasGerais(): Promise<EstatisticasGerais> {
     totalArrecadado,
     arrecadadoHoje,
   };
+
+  console.log("📊 Estatísticas:", stats);
+  console.log("🎱 Total bolões:", boloes?.length);
+  console.log("🎮 Total jogos:", jogos?.length);
+
+  return stats;
 }
 
 export async function buscarJogosRecentes(limite = 5): Promise<JogoRecente[]> {
@@ -119,10 +125,10 @@ export async function buscarEstatisticasPorBolao(bolaoId: string) {
 
   return {
     total: jogos.length,
-    validados: jogos.filter((j) => j.status === "validado").length,
+    validados: jogos.filter((j) => j.status === "pago").length,
     pendentes: jogos.filter((j) => j.status === "pendente").length,
     arrecadado: jogos
-      .filter((j) => j.status === "validado")
+      .filter((j) => j.status === "pago")
       .reduce((acc, j) => acc + (j.valor || 0), 0),
   };
 }

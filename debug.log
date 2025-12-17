@@ -1,0 +1,71 @@
+[Init] Log file created.
+[2025-12-17T14:41:13.319Z] [Criar PIX] Requisição recebida!
+[2025-12-17T14:41:13.321Z] [Criar PIX] Body: {"bolaoId":"dd97b596-dee4-4b52-b48d-a8288926a2c1","nome":"Teste Log","whatsapp":"11999999999","numeros":[4,11,19,25,26,29,33,37,41,54],"valor":50}
+[2025-12-17T14:41:13.757Z] [Criar PIX] Jogo criado com sucesso. ID: c3d847d1-6760-4a20-8ea8-59de1f30f51b
+[2025-12-17T14:41:14.341Z] [GET Jogo] Buscando ID: c3d847d1-6760-4a20-8ea8-59de1f30f51b
+[2025-12-17T14:41:14.440Z] [GET Jogo] Erro ou não encontrado. ID: c3d847d1-6760-4a20-8ea8-59de1f30f51b. Erro: {"code":"42703","details":null,"hint":"Perhaps you meant to reference the column \"boloes_1.nome\".","message":"column boloes_1.numero does not exist"}
+[2025-12-17T14:41:14.550Z] [GET Jogo] Buscando ID: c3d847d1-6760-4a20-8ea8-59de1f30f51b
+[2025-12-17T14:41:14.706Z] [GET Jogo] Erro ou não encontrado. ID: c3d847d1-6760-4a20-8ea8-59de1f30f51b. Erro: {"code":"42703","details":null,"hint":"Perhaps you meant to reference the column \"boloes_1.nome\".","message":"column boloes_1.numero does not exist"}
+[2025-12-17T14:44:45.057Z] [Criar PIX] Requisição recebida!
+[2025-12-17T14:44:45.059Z] [Criar PIX] Body: {"bolaoId":"dd97b596-dee4-4b52-b48d-a8288926a2c1","nome":"Teste Robot","whatsapp":"11999999999","numeros":[1,18,23,24,28,30,34,43,45,46],"valor":50}
+[2025-12-17T14:44:45.590Z] [Criar PIX] Jogo criado com sucesso. ID: 461a1a86-c0d2-4655-ade3-3e357d2ad8e4
+[2025-12-17T14:44:48.913Z] [GET Jogo] Buscando ID: 461a1a86-c0d2-4655-ade3-3e357d2ad8e4
+[2025-12-17T14:44:49.149Z] [GET Jogo] Buscando ID: 461a1a86-c0d2-4655-ade3-3e357d2ad8e4
+[2025-12-17T14:55:47.259Z] [GET Jogo] Buscando ID: 461a1a86-c0d2-4655-ade3-3e357d2ad8e4
+[2025-12-17T14:56:05.627Z] [GET Jogo] Buscando ID: 461a1a86-c0d2-4655-ade3-3e357d2ad8e4
+[2025-12-17T14:56:58.394Z] [GET Jogo] Buscando ID: 461a1a86-c0d2-4655-ade3-3e357d2ad8e4
+[2025-12-17T14:57:23.374Z] [Criar PIX] Requisição recebida!
+[2025-12-17T14:57:23.375Z] [Criar PIX] Body: {"bolaoId":"dd97b596-dee4-4b52-b48d-a8288926a2c1","nome":"Teste simulado","whatsapp":"11999999999","numeros":[7,9,12,13,16,22,29,36,37,41],"valor":50}
+[2025-12-17T14:57:23.947Z] [Criar PIX] Jogo criado com sucesso. ID: ac0ce526-9141-4fc6-b996-6729793aeca7
+[2025-12-17T14:57:24.220Z] [GET Jogo] Buscando ID: ac0ce526-9141-4fc6-b996-6729793aeca7
+[2025-12-17T14:57:24.350Z] [GET Jogo] Buscando ID: ac0ce526-9141-4fc6-b996-6729793aeca7
+[2025-12-17T15:06:58.807Z] [Criar PIX] Requisição recebida!
+[2025-12-17T15:06:58.809Z] [Criar PIX] Body: {"bolaoId":"dd97b596-dee4-4b52-b48d-a8288926a2c1","nome":"Test 1","whatsapp":"11111111111","numeros":[5,7,11,12,24,28,33,40,44,58],"valor":50}
+[2025-12-17T15:07:12.993Z] [Criar PIX] Requisição recebida!
+[2025-12-17T15:07:12.994Z] [Criar PIX] Body: {"bolaoId":"dd97b596-dee4-4b52-b48d-a8288926a2c1","nome":"Test 1","whatsapp":"11111111111","numeros":[5,7,11,12,24,28,33,40,44,58],"valor":50}
+[2025-12-17T15:07:46.979Z] [Criar PIX] Requisição recebida!
+[2025-12-17T15:07:46.979Z] [Criar PIX] Body: {"bolaoId":"dd97b596-dee4-4b52-b48d-a8288926a2c1","nome":"Test 1","whatsapp":"11111111111","numeros":[5,7,11,12,24,28,33,40,44,58],"valor":50}
+[2025-12-17T15:17:15.847Z] [Criar PIX] Requisição recebida!
+[2025-12-17T15:17:15.849Z] [Criar PIX] Body: {"bolaoId":"dd97b596-dee4-4b52-b48d-a8288926a2c1","nome":"Test 2","whatsapp":"22222222222","numeros":[4,11,16,20,23,24,25,46,49,52],"valor":50}
+[2025-12-17T15:17:16.341Z] [Criar PIX] Jogo criado com sucesso. ID: 319c7047-d76d-4052-9ba1-44f4df28ed50
+[2025-12-17T15:17:19.359Z] [GET Jogo] Buscando ID: 319c7047-d76d-4052-9ba1-44f4df28ed50
+[2025-12-17T15:17:19.560Z] [GET Jogo] Buscando ID: 319c7047-d76d-4052-9ba1-44f4df28ed50
+[2025-12-17T15:17:27.220Z] [GET Jogo] Buscando ID: 319c7047-d76d-4052-9ba1-44f4df28ed50
+[2025-12-17T15:17:27.426Z] [GET Jogo] Buscando ID: 319c7047-d76d-4052-9ba1-44f4df28ed50
+[2025-12-17T15:27:14.539Z] [Criar PIX] Requisição recebida!
+[2025-12-17T15:27:14.540Z] [Criar PIX] Body: {"bolaoId":"dd97b596-dee4-4b52-b48d-a8288926a2c1","nome":"Teste 3","whatsapp":"33333333333","numeros":[15,20,27,28,38,44,45,49,55,57],"valor":50}
+[2025-12-17T15:27:15.074Z] [Criar PIX] Jogo criado com sucesso. ID: ab96dc25-efcc-4d5f-a5da-a5799c83f1c8
+[2025-12-17T15:27:15.371Z] [GET Jogo] Buscando ID: ab96dc25-efcc-4d5f-a5da-a5799c83f1c8
+[2025-12-17T15:27:15.540Z] [GET Jogo] Buscando ID: ab96dc25-efcc-4d5f-a5da-a5799c83f1c8
+[2025-12-17T15:27:19.600Z] [GET Jogo] Buscando ID: ab96dc25-efcc-4d5f-a5da-a5799c83f1c8
+[2025-12-17T15:27:19.741Z] [GET Jogo] Buscando ID: ab96dc25-efcc-4d5f-a5da-a5799c83f1c8
+[2025-12-17T15:29:05.396Z] [GET Jogo] Buscando ID: ab96dc25-efcc-4d5f-a5da-a5799c83f1c8
+[2025-12-17T15:29:22.120Z] [Criar PIX] Requisição recebida!
+[2025-12-17T15:29:22.121Z] [Criar PIX] Body: {"bolaoId":"dd97b596-dee4-4b52-b48d-a8288926a2c1","nome":"Teste 4","whatsapp":"44444444444","numeros":[3,13,17,36,40,46,48,50,53,55],"valor":50}
+[2025-12-17T15:29:33.081Z] [Criar PIX] Requisição recebida!
+[2025-12-17T15:29:33.083Z] [Criar PIX] Body: {"bolaoId":"dd97b596-dee4-4b52-b48d-a8288926a2c1","nome":"Teste 4","whatsapp":"44444444444","numeros":[3,13,17,36,40,46,48,50,53,55],"valor":50}
+[2025-12-17T15:30:38.887Z] [Criar PIX] Requisição recebida!
+[2025-12-17T15:30:38.888Z] [Criar PIX] Body: {"bolaoId":"dd97b596-dee4-4b52-b48d-a8288926a2c1","nome":"Teste 4","whatsapp":"44444444444","numeros":[3,13,17,36,40,46,48,50,53,55],"valor":50}
+[2025-12-17T15:30:39.377Z] [Criar PIX] Jogo criado com sucesso. ID: 0a79e723-355d-468a-a791-485c93f249ae
+[2025-12-17T15:30:39.845Z] [GET Jogo] Buscando ID: 0a79e723-355d-468a-a791-485c93f249ae
+[2025-12-17T15:30:39.994Z] [GET Jogo] Buscando ID: 0a79e723-355d-468a-a791-485c93f249ae
+[2025-12-17T15:30:42.915Z] [GET Jogo] Buscando ID: 0a79e723-355d-468a-a791-485c93f249ae
+[2025-12-17T15:30:43.041Z] [GET Jogo] Buscando ID: 0a79e723-355d-468a-a791-485c93f249ae
+[2025-12-17T21:22:22.276Z] [Criar PIX] Requisição recebida!
+[2025-12-17T21:22:22.278Z] [Criar PIX] Body: {"bolaoId":"dd97b596-dee4-4b52-b48d-a8288926a2c1","nome":"Teste 3","whatsapp":"33333333333","numeros":[6,16,21,26,38,42,43,47,48,58],"valor":50}
+[2025-12-17T21:22:22.864Z] [Criar PIX] Jogo criado com sucesso. ID: 3dab190c-692f-44b2-a20d-0c976971b42c
+[2025-12-17T21:22:27.066Z] [GET Jogo] Buscando ID: 3dab190c-692f-44b2-a20d-0c976971b42c
+[2025-12-17T21:22:27.484Z] [GET Jogo] Buscando ID: 3dab190c-692f-44b2-a20d-0c976971b42c
+[2025-12-17T21:22:35.772Z] [GET Jogo] Buscando ID: 3dab190c-692f-44b2-a20d-0c976971b42c
+[2025-12-17T21:22:35.906Z] [GET Jogo] Buscando ID: 3dab190c-692f-44b2-a20d-0c976971b42c
+[2025-12-17T21:23:17.800Z] [GET Jogo] Buscando ID: 3dab190c-692f-44b2-a20d-0c976971b42c
+[2025-12-17T21:23:18.021Z] [GET Jogo] Buscando ID: 3dab190c-692f-44b2-a20d-0c976971b42c
+[2025-12-17T21:27:04.381Z] [GET Jogo] Buscando ID: 3dab190c-692f-44b2-a20d-0c976971b42c
+[2025-12-17T21:27:48.298Z] [GET Jogo] Buscando ID: 3dab190c-692f-44b2-a20d-0c976971b42c
+[2025-12-17T21:30:36.448Z] [Criar PIX] Requisição recebida!
+[2025-12-17T21:30:36.451Z] [Criar PIX] Body: {"bolaoId":"dd97b596-dee4-4b52-b48d-a8288926a2c1","nome":"Teste 33","whatsapp":"33333333333","numeros":[3,4,7,15,26,38,41,42,50,57],"valor":50}
+[2025-12-17T21:30:36.840Z] [Criar PIX] Jogo criado com sucesso. ID: 48d58b0e-f79c-48af-abae-b942a4f77ad6
+[2025-12-17T21:30:37.214Z] [GET Jogo] Buscando ID: 48d58b0e-f79c-48af-abae-b942a4f77ad6
+[2025-12-17T21:30:37.327Z] [GET Jogo] Buscando ID: 48d58b0e-f79c-48af-abae-b942a4f77ad6
+[2025-12-17T21:30:40.245Z] [GET Jogo] Buscando ID: 48d58b0e-f79c-48af-abae-b942a4f77ad6
+[2025-12-17T21:30:40.360Z] [GET Jogo] Buscando ID: 48d58b0e-f79c-48af-abae-b942a4f77ad6
