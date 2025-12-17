@@ -24,15 +24,15 @@ import autoTable from "jspdf-autotable";
 interface Bolao {
   id: string;
   nome: string;
-  numero: number;
+  concurso: string;
   status: string;
   data_sorteio: string;
-  valor_por_jogo: number;
+  valor_cota: number;
 }
 
 interface Jogo {
   id: string;
-  nome_participante: string;
+  nome: string;
   numeros: number[];
   status: string;
   created_at: string;
@@ -69,7 +69,7 @@ export default function ParticipantesPage() {
         // Buscar bolão
         const { data: bolaoData, error: bolaoError } = await supabase
           .from("boloes")
-          .select("id, nome, numero, status, data_sorteio, valor_por_jogo")
+          .select("id, nome, concurso, status, data_sorteio, valor_cota")
           .eq("id", bolaoId)
           .single();
 
@@ -83,7 +83,7 @@ export default function ParticipantesPage() {
         // Buscar jogos validados
         const { data: jogosData } = await supabase
           .from("jogos")
-          .select("id, nome_participante, numeros, status, created_at")
+          .select("id, nome, numeros, status, created_at")
           .eq("bolao_id", bolaoId)
           .eq("status", "validado")
           .order("created_at", { ascending: true });
@@ -109,36 +109,33 @@ export default function ParticipantesPage() {
     // Título
     doc.setFontSize(20);
     doc.setFont("helvetica", "bold");
-    doc.text(`Bolão #${bolao.numero} - ${bolao.nome}`, 14, 22);
+    doc.text(`Bolão ${bolao.nome}`, 14, 22);
 
     // Info do bolão
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
+    doc.text(`Concurso: ${bolao.concurso}`, 14, 32);
     doc.text(
       `Data do Sorteio: ${new Date(bolao.data_sorteio).toLocaleDateString("pt-BR")}`,
       14,
-      32
+      38
     );
-    doc.text(`Total de Jogos: ${jogos.length}`, 14, 38);
+    doc.text(`Total de Jogos: ${jogos.length}`, 14, 44);
     doc.text(
-      `Valor Arrecadado: ${formatarDinheiro(jogos.length * bolao.valor_por_jogo)}`,
-      14,
-      44
-    );
-    doc.text(
-      `Gerado em: ${new Date().toLocaleString("pt-BR")}`,
+      `Valor Arrecadado: ${formatarDinheiro(jogos.length * bolao.valor_cota)}`,
       14,
       50
     );
+    doc.text(`Gerado em: ${new Date().toLocaleString("pt-BR")}`, 14, 56);
 
     // Linha separadora
     doc.setLineWidth(0.5);
-    doc.line(14, 55, 196, 55);
+    doc.line(14, 61, 196, 61);
 
     // Tabela de jogos
     const dadosTabela = jogos.map((jogo, index) => [
       (index + 1).toString().padStart(3, "0"),
-      jogo.nome_participante,
+      jogo.nome,
       mostrarNumeros
         ? jogo.numeros.map((n) => n.toString().padStart(2, "0")).join(" - ")
         : "🔒 Números ocultos até o sorteio",
@@ -146,7 +143,7 @@ export default function ParticipantesPage() {
     ]);
 
     autoTable(doc, {
-      startY: 60,
+      startY: 66,
       head: [["#", "Participante", "Números", "Data"]],
       body: dadosTabela,
       theme: "grid",
@@ -182,7 +179,7 @@ export default function ParticipantesPage() {
     }
 
     // Download
-    doc.save(`bolao-${bolao.numero}-participantes.pdf`);
+    doc.save(`bolao-${bolao.concurso}-participantes.pdf`);
   };
 
   const formatarData = (data: string) => {
@@ -226,7 +223,7 @@ export default function ParticipantesPage() {
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <Badge className="bg-white/20 text-white hover:bg-white/30">
-                  #{bolao.numero}
+                  Concurso {bolao.concurso}
                 </Badge>
                 <Badge
                   className={
@@ -277,7 +274,7 @@ export default function ParticipantesPage() {
           <Card>
             <CardContent className="p-4 text-center">
               <p className="text-2xl font-bold text-green-600">
-                {formatarDinheiro(jogos.length * bolao.valor_por_jogo)}
+                {formatarDinheiro(jogos.length * bolao.valor_cota)}
               </p>
               <p className="text-sm text-gray-500">Arrecadado</p>
             </CardContent>
@@ -347,7 +344,7 @@ export default function ParticipantesPage() {
                       </div>
                       <div>
                         <p className="font-medium text-gray-900">
-                          {jogo.nome_participante}
+                          {jogo.nome}
                         </p>
                         <p className="text-sm text-gray-500">
                           {formatarData(jogo.created_at)}
@@ -394,7 +391,7 @@ export default function ParticipantesPage() {
                 <h3 className="text-2xl font-bold mb-2">Quer participar?</h3>
                 <p className="text-green-100 mb-4">
                   Faça seu jogo agora por apenas{" "}
-                  {formatarDinheiro(bolao.valor_por_jogo)}
+                  {formatarDinheiro(bolao.valor_cota)}
                 </p>
                 <Link href="/jogar">
                   <Button

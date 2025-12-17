@@ -35,7 +35,7 @@ import { createClient } from "@/lib/supabase/client";
 
 interface Jogo {
   id: string;
-  nome_participante: string;
+  nome: string;
   whatsapp: string;
   numeros: number[];
   valor: number;
@@ -84,7 +84,7 @@ export default function JogosPage() {
         .from("jogos")
         .select(`
           id,
-          nome_participante,
+          nome,
           whatsapp,
           numeros,
           valor,
@@ -119,7 +119,7 @@ export default function JogosPage() {
   // Filtrar jogos
   const jogosFiltrados = jogos.filter((jogo) => {
     const matchBusca =
-      jogo.nome_participante.toLowerCase().includes(busca.toLowerCase()) ||
+      jogo.nome.toLowerCase().includes(busca.toLowerCase()) ||
       jogo.whatsapp.includes(busca);
 
     const matchStatus =
@@ -346,7 +346,7 @@ export default function JogosPage() {
                   {jogosFiltrados.map((jogo) => (
                     <TableRow key={jogo.id}>
                       <TableCell className="font-medium">
-                        {jogo.nome_participante}
+                        {jogo.nome}
                       </TableCell>
                       <TableCell>
                         <a
@@ -435,7 +435,7 @@ export default function JogosPage() {
                 <div className="flex justify-between">
                   <span className="text-gray-500">Jogador:</span>
                   <span className="font-medium">
-                    {jogoSelecionado.nome_participante}
+                    {jogoSelecionado.nome}
                   </span>
                 </div>
                 <div className="flex justify-between">

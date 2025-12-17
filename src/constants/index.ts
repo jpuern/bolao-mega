@@ -25,8 +25,8 @@ export const CONFIG = {
 
   // PIX - ADICIONAR ISSO
   PIX: {
-    CHAVE: "bolaomega@email.com", // Substitua pela chave real
-    NOME_BENEFICIARIO: "BOLAO MEGA DE OURO",
+    CHAVE: "04917091373", // Substitua pela chave real
+    NOME_BENEFICIARIO: "João Pedro da Costa Ribeiro",
     CIDADE: "RUSSAS",
   },
 } as const;

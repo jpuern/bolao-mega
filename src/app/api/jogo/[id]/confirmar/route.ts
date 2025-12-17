@@ -12,7 +12,7 @@ export async function POST(
     // Buscar jogo
     const { data: jogo, error: jogoError } = await supabase
       .from("jogos")
-      .select("*")
+      .select("id, status")
       .eq("id", id)
       .single();
 
@@ -24,8 +24,16 @@ export async function POST(
     }
 
     if (jogo.status === "validado") {
+      return NextResponse.json({
+        success: true,
+        message: "Jogo já estava confirmado",
+        jaConfirmado: true,
+      });
+    }
+
+    if (jogo.status === "cancelado") {
       return NextResponse.json(
-        { error: "Jogo já foi confirmado" },
+        { error: "Este jogo foi cancelado" },
         { status: 400 }
       );
     }
@@ -40,6 +48,7 @@ export async function POST(
       .eq("id", id);
 
     if (updateError) {
+      console.error("Erro ao atualizar jogo:", updateError);
       throw updateError;
     }
 

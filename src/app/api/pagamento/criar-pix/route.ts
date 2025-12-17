@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
       .insert([
         {
           bolao_id: bolaoId,
-          nome_participante: nome.trim(),
+          nome: nome.trim(),
           whatsapp: whatsapp.replace(/\D/g, ""),
           numeros: numeros.sort((a: number, b: number) => a - b),
           valor: valorJogo,

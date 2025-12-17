@@ -185,7 +185,7 @@ export default async function AdminDashboardPage() {
                       </div>
                       <div>
                         <p className="font-medium text-gray-900">
-                          {jogo.nome_participante}
+                          {jogo.nome}
                         </p>
                         <p className="text-sm text-gray-500">
                           {jogo.bolao?.nome || "Bolão"} •{" "}

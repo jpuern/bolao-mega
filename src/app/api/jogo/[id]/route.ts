@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { CONFIG } from "@/constants";
 
 export async function GET(
   request: NextRequest,
@@ -27,12 +26,16 @@ export async function GET(
       );
     }
 
-    // Gerar dados do PIX (mesmo padrão da criação)
+    // Chave PIX do ambiente ou fallback
+    const chavePix = process.env.PIX_CHAVE || "";
+
+    // Gerar QR Code simples (para demonstração)
     const pixData = {
       qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(
-        `PIX:${CONFIG.PIX.CHAVE}:${jogo.valor}:${jogo.id}`
+        `PIX:${chavePix}:${jogo.valor}:${jogo.id}`
       )}`,
-      pixCopiaECola: gerarPixCopiaECola(CONFIG.PIX.CHAVE, jogo.valor, jogo.id),
+      pixCopiaECola: chavePix, // Simplificado - usar chave direta
+      chave: chavePix,
     };
 
     // Calcular expiração (30 min após criação se pendente)
@@ -46,7 +49,7 @@ export async function GET(
       numeros: jogo.numeros,
       valor: jogo.valor,
       status: jogo.status,
-      bolao: jogo.bolao,
+      bolao: Array.isArray(jogo.bolao) ? jogo.bolao[0] || null : jogo.bolao,
       expiraEm,
       pix: pixData,
       criadoEm: jogo.created_at,
@@ -58,10 +61,4 @@ export async function GET(
       { status: 500 }
     );
   }
-}
-
-// Função auxiliar para gerar código PIX Copia e Cola
-function gerarPixCopiaECola(chave: string, valor: number, txid: string): string {
-  const valorFormatado = valor.toFixed(2).replace(".", "");
-  return `00020126580014br.gov.bcb.pix0136${chave}5204000053039865404${valorFormatado}5802BR5913BOLAO MEGA6008BRASILIA62070503***${txid.slice(-8)}6304`;
 }

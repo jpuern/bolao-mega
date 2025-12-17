@@ -12,7 +12,7 @@ export interface EstatisticasGerais {
 
 export interface JogoRecente {
   id: string;
-  nome_participante: string;
+  nome: string;
   numeros: number[];
   valor: number;
   status: string;
@@ -77,7 +77,7 @@ export async function buscarJogosRecentes(limite = 5): Promise<JogoRecente[]> {
     .from("jogos")
     .select(`
       id,
-      nome_participante,
+      nome,
       numeros,
       valor,
       status,
@@ -95,7 +95,7 @@ export async function buscarJogosRecentes(limite = 5): Promise<JogoRecente[]> {
   // Transformar dados para o formato correto
   return (data || []).map((jogo) => ({
     id: jogo.id,
-    nome_participante: jogo.nome_participante,
+    nome: jogo.nome,
     numeros: jogo.numeros,
     valor: jogo.valor,
     status: jogo.status,
