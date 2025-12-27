@@ -18,6 +18,8 @@ import {
   Trash2,
   Loader2,
   Search,
+  Download,
+  Filter,
 } from "lucide-react";
 import { formatarDinheiro } from "@/lib/utils";
 import { toast } from "sonner";
@@ -28,11 +30,20 @@ import {
   excluirBolao,
   atualizarBolao,
 } from "@/lib/services/boloes";
+import { exportToCSV, formatBolaoForExport } from "@/lib/utils/export";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function BoloesPage() {
   const [boloes, setBoloes] = useState<Bolao[]>([]);
   const [loading, setLoading] = useState(true);
   const [busca, setBusca] = useState("");
+  const [filtroStatus, setFiltroStatus] = useState<string>("todos");
 
   // Modal criar bolão
   const [modalAberto, setModalAberto] = useState(false);
@@ -162,12 +173,20 @@ export default function BoloesPage() {
     }
   };
 
+  // Exportar bolões
+  const handleExportar = () => {
+    const dadosExport = boloesFiltrados.map(formatBolaoForExport);
+    exportToCSV(dadosExport, `boloes_${new Date().toISOString().split('T')[0]}`);
+    toast.success("Bolões exportados com sucesso!");
+  };
+
   // Filtrar bolões
-  const boloesFiltrados = boloes.filter(
-    (b) =>
-      b.nome.toLowerCase().includes(busca.toLowerCase()) ||
-      b.numero.toString().includes(busca)
-  );
+  const boloesFiltrados = boloes.filter((b) => {
+    const matchBusca = b.nome.toLowerCase().includes(busca.toLowerCase()) ||
+      b.numero.toString().includes(busca);
+    const matchStatus = filtroStatus === "todos" || b.status === filtroStatus;
+    return matchBusca && matchStatus;
+  });
 
   // Formatadores
   const formatarData = (data: string) => {
@@ -200,35 +219,45 @@ export default function BoloesPage() {
           <h1 className="text-3xl font-bold text-gray-900">Bolões</h1>
           <p className="text-gray-500 mt-1">Gerencie os bolões da Mega-Sena</p>
         </div>
-        <Button
-          onClick={() => {
-            setForm({
-              nome: "",
-              numero: boloes.length + 1,
-              valor_jogo: 5,
-              taxa_organizador: 10,
-              data_inicio: "",
-              data_encerramento: "",
-              status: "ativo",
-            });
-            setModalAberto(true);
-          }}
-          className="bg-green-600 hover:bg-green-700"
-        >
-          <Plus className="w-5 h-5 mr-2" />
-          Novo Bolão
-        </Button>
+        <Link href="/admin/boloes/novo">
+          <Button className="bg-green-600 hover:bg-green-700">
+            <Plus className="w-5 h-5 mr-2" />
+            Novo Bolão
+          </Button>
+        </Link>
       </div>
 
-      {/* Busca */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-        <Input
-          placeholder="Buscar por nome ou número..."
-          value={busca}
-          onChange={(e) => setBusca(e.target.value)}
-          className="pl-10"
-        />
+      {/* Filtros e Busca */}
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <Input
+            placeholder="Buscar por nome ou número..."
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <Select value={filtroStatus} onValueChange={setFiltroStatus}>
+          <SelectTrigger className="w-full sm:w-48">
+            <Filter className="w-4 h-4 mr-2" />
+            <SelectValue placeholder="Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="todos">Todos</SelectItem>
+            <SelectItem value="ativo">Ativos</SelectItem>
+            <SelectItem value="encerrado">Encerrados</SelectItem>
+            <SelectItem value="cancelado">Cancelados</SelectItem>
+          </SelectContent>
+        </Select>
+        <Button
+          variant="outline"
+          onClick={handleExportar}
+          disabled={boloesFiltrados.length === 0}
+        >
+          <Download className="w-4 h-4 mr-2" />
+          Exportar CSV
+        </Button>
       </div>
 
       {/* Lista de Bolões */}
@@ -245,13 +274,12 @@ export default function BoloesPage() {
                 : "Crie seu primeiro bolão para começar"}
             </p>
             {!busca && (
-              <Button
-                onClick={() => setModalAberto(true)}
-                className="bg-green-600 hover:bg-green-700"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Criar Bolão
-              </Button>
+              <Link href="/admin/boloes/novo">
+                <Button className="bg-green-600 hover:bg-green-700">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Criar Bolão
+                </Button>
+              </Link>
             )}
           </CardContent>
         </Card>
@@ -274,15 +302,15 @@ export default function BoloesPage() {
                       <div className="flex items-center gap-4 mt-1 text-sm text-gray-500 flex-wrap">
                         <span className="flex items-center gap-1">
                           <Trophy className="w-4 h-4" />
-                          Bolão #{bolao.numero}
+                          Bolão #{bolao.concurso || bolao.numero || 'N/A'}
                         </span>
                         <span className="flex items-center gap-1">
                           <Calendar className="w-4 h-4" />
-                          {formatarData(bolao.data_inicio)} - {formatarData(bolao.data_encerramento)}
+                          Sorteio: {bolao.data_sorteio ? formatarData(bolao.data_sorteio) : 'N/A'}
                         </span>
                         <span className="flex items-center gap-1">
                           <DollarSign className="w-4 h-4" />
-                          {formatarDinheiro(bolao.valor_jogo)}/jogo
+                          {formatarDinheiro(bolao.valor_cota)}/jogo
                         </span>
                       </div>
                     </div>
@@ -290,12 +318,6 @@ export default function BoloesPage() {
 
                   {/* Ações */}
                   <div className="flex gap-2 flex-wrap">
-                    <Link href={`/admin/boloes/${bolao.id}`}>
-                      <Button variant="outline" size="sm">
-                        <Eye className="w-4 h-4 mr-1" />
-                        Ver
-                      </Button>
-                    </Link>
                     <Link href={`/admin/boloes/${bolao.id}/editar`}>
                       <Button variant="outline" size="sm">
                         <Edit className="w-4 h-4 mr-1" />
@@ -458,28 +480,32 @@ export default function BoloesPage() {
       {/* Modal Inserir Resultado */}
       {modalResultado && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-          <Card className="w-full max-w-2xl my-8">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Trophy className="w-5 h-5 text-yellow-500" />
+          <Card className="w-full max-w-2xl my-8 bg-white shadow-2xl">
+            <CardHeader className="border-b bg-gradient-to-r from-green-50 to-yellow-50">
+              <CardTitle className="flex items-center gap-2 text-gray-900">
+                <Trophy className="w-5 h-5 text-yellow-600" />
                 Inserir Resultado - {modalResultado.nome} ({numerosSorteados.length}/6)
               </CardTitle>
+              <p className="text-sm text-gray-600 mt-1">Selecione os 6 números sorteados</p>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Números selecionados */}
-              <div className="flex gap-3 min-h-[50px] flex-wrap">
-                {numerosSorteados.length > 0 ? (
-                  numerosSorteados.map((num) => (
-                    <div
-                      key={num}
-                      className="w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center font-bold text-lg"
-                    >
-                      {num.toString().padStart(2, "0")}
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-gray-400">Selecione 6 números sorteados</p>
-                )}
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-sm font-medium text-gray-700 mb-3">Números Sorteados:</p>
+                <div className="flex gap-3 min-h-[50px] flex-wrap">
+                  {numerosSorteados.length > 0 ? (
+                    numerosSorteados.map((num) => (
+                      <div
+                        key={num}
+                        className="w-12 h-12 bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-lg shadow-md"
+                      >
+                        {num.toString().padStart(2, "0")}
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-gray-500 italic">Selecione 6 números abaixo</p>
+                  )}
+                </div>
               </div>
 
               {/* Grid de números */}
@@ -494,10 +520,9 @@ export default function BoloesPage() {
                       className={`
                         aspect-square rounded-full font-bold text-sm
                         flex items-center justify-center transition-all
-                        ${
-                          selecionado
-                            ? "bg-green-500 text-white"
-                            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        ${selecionado
+                          ? "bg-green-600 text-white shadow-lg scale-110"
+                          : "bg-white border-2 border-gray-300 text-gray-800 hover:border-green-500 hover:bg-green-50"
                         }
                         disabled:opacity-40 disabled:cursor-not-allowed
                       `}

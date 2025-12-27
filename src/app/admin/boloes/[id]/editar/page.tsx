@@ -32,13 +32,16 @@ export default function EditarBolaoPage() {
     const carregar = async () => {
       try {
         const bolao = await buscarBolao(id);
+        console.log('📝 [Editar Bolão] Dados carregados:', bolao);
+
+        // Mapear campos do banco para o formulário
         setForm({
           nome: bolao.nome,
-          numero: bolao.numero,
-          valor_jogo: bolao.valor_jogo,
-          taxa_organizador: bolao.taxa_organizador,
-          data_inicio: bolao.data_inicio,
-          data_encerramento: bolao.data_encerramento,
+          numero: bolao.concurso ? parseInt(bolao.concurso) : bolao.numero,
+          valor_jogo: bolao.valor_cota,
+          taxa_organizador: bolao.taxa_organizador || 10,
+          data_inicio: bolao.data_sorteio || '', // Usar data_sorteio como data_inicio
+          data_encerramento: bolao.data_sorteio || '',
           status: bolao.status,
         });
       } catch (error) {

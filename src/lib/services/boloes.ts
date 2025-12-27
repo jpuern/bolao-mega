@@ -48,11 +48,14 @@ export async function buscarBolaoAtivo() {
 export async function criarBolao(dados: BolaoFormData) {
   const supabase = createClient();
 
-  // Mapear valor_jogo para valor_cota (nome da coluna no banco)
-  const { valor_jogo, ...resto } = dados;
+  // Mapear campos do formulário para o schema do banco
   const dadosParaBanco = {
-    ...resto,
-    valor_cota: valor_jogo,
+    nome: dados.nome,
+    concurso: dados.numero.toString(), // numero → concurso (varchar)
+    data_sorteio: dados.data_encerramento, // data_encerramento → data_sorteio
+    valor_cota: dados.valor_jogo, // valor_jogo → valor_cota
+    status: dados.status,
+    // Campos que não existem no banco são ignorados: data_inicio, taxa_organizador
   };
 
   const { data, error } = await supabase
@@ -69,11 +72,14 @@ export async function criarBolao(dados: BolaoFormData) {
 export async function atualizarBolao(id: string, dados: Partial<BolaoFormData>) {
   const supabase = createClient();
 
-  // Mapear valor_jogo para valor_cota se presente
-  const { valor_jogo, ...resto } = dados;
-  const dadosParaBanco = valor_jogo !== undefined
-    ? { ...resto, valor_cota: valor_jogo }
-    : resto;
+  // Mapear campos do formulário para o schema do banco
+  const dadosParaBanco: any = {};
+
+  if (dados.nome !== undefined) dadosParaBanco.nome = dados.nome;
+  if (dados.numero !== undefined) dadosParaBanco.concurso = dados.numero.toString();
+  if (dados.data_encerramento !== undefined) dadosParaBanco.data_sorteio = dados.data_encerramento;
+  if (dados.valor_jogo !== undefined) dadosParaBanco.valor_cota = dados.valor_jogo;
+  if (dados.status !== undefined) dadosParaBanco.status = dados.status;
 
   const { data, error } = await supabase
     .from("boloes")

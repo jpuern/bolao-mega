@@ -28,10 +28,12 @@ import {
   CheckCircle2,
   XCircle,
   RefreshCw,
+  Download,
 } from "lucide-react";
 import { formatarDinheiro } from "@/lib/utils";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
+import { exportToCSV, formatJogoForExport } from "@/lib/utils/export";
 
 interface Jogo {
   id: string;
@@ -41,18 +43,19 @@ interface Jogo {
   valor: number;
   status: string;
   created_at: string;
-  pago_em: string | null;
   bolao: {
     id: string;
     nome: string;
-    numero: number;
+    numero?: number;
+    concurso?: string;
   } | null;
 }
 
 interface Bolao {
   id: string;
   nome: string;
-  numero: number;
+  numero?: number;
+  concurso?: string;
 }
 
 export default function JogosPage() {
@@ -63,6 +66,7 @@ export default function JogosPage() {
   const [filtroStatus, setFiltroStatus] = useState<string>("todos");
   const [filtroBolao, setFiltroBolao] = useState<string>("todos");
   const [jogoSelecionado, setJogoSelecionado] = useState<Jogo | null>(null);
+  const [jogoParaCancelar, setJogoParaCancelar] = useState<Jogo | null>(null);
   const [atualizando, setAtualizando] = useState<string | null>(null);
 
   const supabase = createClient();
@@ -70,40 +74,61 @@ export default function JogosPage() {
   // Carregar jogos e bolões
   const carregarDados = async () => {
     setLoading(true);
+    console.log('🔍 [Admin Jogos] Iniciando carregamento de dados...');
     try {
       // Buscar bolões para o filtro
-      const { data: boloesData } = await supabase
+      const { data: boloesData, error: boloesError } = await supabase
         .from("boloes")
-        .select("id, nome, numero")
-        .order("numero", { ascending: false });
+        .select("id, nome, concurso")
+        .order("concurso", { ascending: false });
 
+      console.log('📊 [Admin Jogos] Bolões carregados:', boloesData?.length || 0);
+      if (boloesError) console.error('❌ [Admin Jogos] Erro ao carregar bolões:', boloesError);
       setBoloes(boloesData || []);
 
-      // Buscar jogos com dados do bolão
+      // Buscar jogos SEM join
       const { data: jogosData, error } = await supabase
         .from("jogos")
-        .select(`
-          id,
-          nome,
-          whatsapp,
-          numeros,
-          valor,
-          status,
-          created_at,
-          pago_em,
-          bolao:boloes(id, nome, numero)
-        `)
+        .select("*")
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
+      console.log('🎮 [Admin Jogos] Jogos retornados:', jogosData?.length || 0);
+      if (error) {
+        console.error('❌ [Admin Jogos] Erro ao carregar jogos:', error);
+        console.error('❌ [Admin Jogos] Detalhes do erro:', JSON.stringify(error, null, 2));
+        throw error;
+      }
 
-      // Transformar dados
-      const jogosFormatados = (jogosData || []).map((jogo) => ({
+      // Buscar dados dos bolões de uma vez (evitar N+1 queries)
+      const bolaoIds = [...new Set((jogosData || []).map(j => j.bolao_id).filter(Boolean))];
+      console.log('🔍 [Admin Jogos] Bolão IDs únicos:', bolaoIds);
+
+      let boloesMap = new Map();
+      if (bolaoIds.length > 0) {
+        const { data: boloesJogos, error: boloesJogosError } = await supabase
+          .from("boloes")
+          .select("id, nome, concurso")
+          .in("id", bolaoIds);
+
+        if (boloesJogosError) {
+          console.error('❌ [Admin Jogos] Erro ao carregar bolões dos jogos:', boloesJogosError);
+        } else {
+          // Criar mapa para lookup rápido
+          (boloesJogos || []).forEach(bolao => {
+            boloesMap.set(bolao.id, bolao);
+          });
+          console.log('✅ [Admin Jogos] Bolões carregados:', boloesMap.size);
+        }
+      }
+
+      // Mapear bolões aos jogos
+      const jogosComBolao = (jogosData || []).map(jogo => ({
         ...jogo,
-        bolao: Array.isArray(jogo.bolao) ? jogo.bolao[0] || null : jogo.bolao,
+        bolao: jogo.bolao_id ? boloesMap.get(jogo.bolao_id) || null : null,
       }));
 
-      setJogos(jogosFormatados);
+      console.log('✅ [Admin Jogos] Jogos com bolão:', jogosComBolao.length);
+      setJogos(jogosComBolao);
     } catch (error) {
       console.error("Erro ao carregar jogos:", error);
       toast.error("Erro ao carregar jogos");
@@ -135,16 +160,9 @@ export default function JogosPage() {
   const alterarStatus = async (jogoId: string, novoStatus: string) => {
     setAtualizando(jogoId);
     try {
-      const updateData: { status: string; pago_em?: string | null } = {
+      const updateData = {
         status: novoStatus,
       };
-
-      // Se validando, adiciona data de pagamento
-      if (novoStatus === "validado") {
-        updateData.pago_em = new Date().toISOString();
-      } else {
-        updateData.pago_em = null;
-      }
 
       const { error } = await supabase
         .from("jogos")
@@ -157,13 +175,13 @@ export default function JogosPage() {
       setJogos((prev) =>
         prev.map((j) =>
           j.id === jogoId
-            ? { ...j, status: novoStatus, pago_em: updateData.pago_em || null }
+            ? { ...j, status: novoStatus }
             : j
         )
       );
 
       toast.success(
-        novoStatus === "validado"
+        novoStatus === "pago"
           ? "Jogo validado com sucesso!"
           : "Status atualizado!"
       );
@@ -173,6 +191,13 @@ export default function JogosPage() {
     } finally {
       setAtualizando(null);
     }
+  };
+
+  // Exportar jogos
+  const handleExportar = () => {
+    const dadosExport = jogosFiltrados.map(formatJogoForExport);
+    exportToCSV(dadosExport, `jogos_${new Date().toISOString().split('T')[0]}`);
+    toast.success("Jogos exportados com sucesso!");
   };
 
   const formatarWhatsApp = (numero: string) => {
@@ -192,10 +217,10 @@ export default function JogosPage() {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "validado":
+      case "pago":
         return (
           <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
-            Validado
+            Pago
           </Badge>
         );
       case "pendente":
@@ -218,10 +243,10 @@ export default function JogosPage() {
   // Estatísticas rápidas
   const stats = {
     total: jogosFiltrados.length,
-    validados: jogosFiltrados.filter((j) => j.status === "validado").length,
+    validados: jogosFiltrados.filter((j) => j.status === "pago").length,
     pendentes: jogosFiltrados.filter((j) => j.status === "pendente").length,
     arrecadado: jogosFiltrados
-      .filter((j) => j.status === "validado")
+      .filter((j) => j.status === "pago")
       .reduce((acc, j) => acc + j.valor, 0),
   };
 
@@ -241,10 +266,20 @@ export default function JogosPage() {
           <h1 className="text-3xl font-bold text-gray-900">Jogos</h1>
           <p className="text-gray-500 mt-1">Gerenciar todos os jogos</p>
         </div>
-        <Button variant="outline" onClick={carregarDados}>
-          <RefreshCw className="w-4 h-4 mr-2" />
-          Atualizar
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={handleExportar}
+            disabled={jogosFiltrados.length === 0}
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Exportar CSV
+          </Button>
+          <Button variant="outline" onClick={carregarDados}>
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Atualizar
+          </Button>
+        </div>
       </div>
 
       {/* Estatísticas */}
@@ -296,7 +331,7 @@ export default function JogosPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="todos">Todos</SelectItem>
-                <SelectItem value="validado">Validados</SelectItem>
+                <SelectItem value="pago">Pagos</SelectItem>
                 <SelectItem value="pendente">Pendentes</SelectItem>
                 <SelectItem value="cancelado">Cancelados</SelectItem>
               </SelectContent>
@@ -309,7 +344,7 @@ export default function JogosPage() {
                 <SelectItem value="todos">Todos os bolões</SelectItem>
                 {boloes.map((bolao) => (
                   <SelectItem key={bolao.id} value={bolao.id}>
-                    #{bolao.numero} - {bolao.nome}
+                    #{bolao.concurso || bolao.numero || '?'} - {bolao.nome}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -362,7 +397,7 @@ export default function JogosPage() {
                       <TableCell>
                         {jogo.bolao ? (
                           <span className="text-sm">
-                            #{jogo.bolao.numero}
+                            #{jogo.bolao.concurso || jogo.bolao.numero || '?'}
                           </span>
                         ) : (
                           <span className="text-gray-400">-</span>
@@ -402,7 +437,7 @@ export default function JogosPage() {
                               variant="ghost"
                               size="sm"
                               className="text-red-600 hover:text-red-700"
-                              onClick={() => alterarStatus(jogo.id, "cancelado")}
+                              onClick={() => setJogoParaCancelar(jogo)}
                               disabled={atualizando === jogo.id}
                             >
                               <XCircle className="w-4 h-4" />
@@ -422,24 +457,24 @@ export default function JogosPage() {
       {/* Modal de Detalhes */}
       {jogoSelecionado && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-md">
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
+          <Card className="w-full max-w-md bg-white shadow-2xl">
+            <CardHeader className="border-b bg-gradient-to-r from-green-50 to-blue-50">
+              <CardTitle className="flex items-center justify-between text-gray-900">
                 <span>Detalhes do Jogo</span>
                 {getStatusBadge(jogoSelecionado.status)}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Info */}
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Jogador:</span>
-                  <span className="font-medium">
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between py-2 border-b">
+                  <span className="text-gray-700 font-medium">Jogador:</span>
+                  <span className="font-semibold text-gray-900">
                     {jogoSelecionado.nome}
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">WhatsApp:</span>
+                <div className="flex justify-between py-2 border-b">
+                  <span className="text-gray-700 font-medium">WhatsApp:</span>
                   <a
                     href={`https://wa.me/55${jogoSelecionado.whatsapp}`}
                     target="_blank"
@@ -449,17 +484,17 @@ export default function JogosPage() {
                     {formatarWhatsApp(jogoSelecionado.whatsapp)}
                   </a>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Bolão:</span>
-                  <span className="font-medium">
+                <div className="flex justify-between py-2 border-b">
+                  <span className="text-gray-700 font-medium">Bolão:</span>
+                  <span className="font-semibold text-gray-900">
                     {jogoSelecionado.bolao
-                      ? `#${jogoSelecionado.bolao.numero} - ${jogoSelecionado.bolao.nome}`
+                      ? `#${jogoSelecionado.bolao.concurso} - ${jogoSelecionado.bolao.nome}`
                       : "-"}
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Valor:</span>
-                  <span className="font-medium text-green-600">
+                <div className="flex justify-between py-2 border-b">
+                  <span className="text-gray-700 font-medium">Valor:</span>
+                  <span className="font-semibold text-green-700">
                     {formatarDinheiro(jogoSelecionado.valor)}
                   </span>
                 </div>
@@ -467,12 +502,7 @@ export default function JogosPage() {
                   <span className="text-gray-500">Data:</span>
                   <span>{formatarData(jogoSelecionado.created_at)}</span>
                 </div>
-                {jogoSelecionado.pago_em && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">Pago em:</span>
-                    <span>{formatarData(jogoSelecionado.pago_em)}</span>
-                  </div>
-                )}
+
               </div>
 
               <hr />
@@ -514,6 +544,69 @@ export default function JogosPage() {
                   onClick={() => setJogoSelecionado(null)}
                 >
                   Fechar
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Modal de Confirmação de Cancelamento */}
+      {jogoParaCancelar && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-md bg-white shadow-2xl">
+            <CardHeader className="border-b">
+              <CardTitle className="flex items-center gap-2 text-red-600">
+                <XCircle className="w-5 h-5" />
+                Cancelar Jogo
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6 space-y-4">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <p className="text-sm text-red-800">
+                  <strong>Atenção!</strong> Esta ação não pode ser desfeita.
+                </p>
+              </div>
+
+              <div className="space-y-2 text-sm">
+                <p className="text-gray-700">
+                  Você está prestes a cancelar o jogo de:
+                </p>
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <p className="font-semibold text-gray-900">{jogoParaCancelar.nome}</p>
+                  <p className="text-gray-600">{formatarWhatsApp(jogoParaCancelar.whatsapp)}</p>
+                  <p className="text-green-600 font-medium">{formatarDinheiro(jogoParaCancelar.valor)}</p>
+                </div>
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => setJogoParaCancelar(null)}
+                  disabled={atualizando === jogoParaCancelar.id}
+                >
+                  Não, voltar
+                </Button>
+                <Button
+                  className="flex-1 bg-red-600 hover:bg-red-700"
+                  onClick={() => {
+                    alterarStatus(jogoParaCancelar.id, "cancelado");
+                    setJogoParaCancelar(null);
+                  }}
+                  disabled={atualizando === jogoParaCancelar.id}
+                >
+                  {atualizando === jogoParaCancelar.id ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Cancelando...
+                    </>
+                  ) : (
+                    <>
+                      <XCircle className="w-4 h-4 mr-2" />
+                      Sim, cancelar
+                    </>
+                  )}
                 </Button>
               </div>
             </CardContent>

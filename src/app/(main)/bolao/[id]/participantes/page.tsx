@@ -258,20 +258,20 @@ export default function ParticipantesPage() {
         {/* Estatísticas */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <Card>
-            <CardContent className="p-4 text-center">
+            <CardContent className="p-4 text-center content-center">
               <Users className="w-8 h-8 text-green-600 mx-auto mb-2" />
               <p className="text-2xl font-bold">{jogos.length}</p>
               <p className="text-sm text-gray-500">Participantes</p>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="p-4 text-center">
+            <CardContent className="p-4 text-center content-center">
               <Trophy className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
               <p className="text-2xl font-bold">{jogos.length * 10}</p>
               <p className="text-sm text-gray-500">Números jogados</p>
             </CardContent>
           </Card>
-          <Card>
+          <Card style={{ alignContent: "center" }}>
             <CardContent className="p-4 text-center">
               <p className="text-2xl font-bold text-green-600">
                 {formatarDinheiro(jogos.length * bolao.valor_cota)}
@@ -279,7 +279,7 @@ export default function ParticipantesPage() {
               <p className="text-sm text-gray-500">Arrecadado</p>
             </CardContent>
           </Card>
-          <Card>
+          <Card style={{ alignContent: "center" }}>
             <CardContent className="p-4 text-center">
               {mostrarNumeros ? (
                 <Unlock className="w-8 h-8 text-green-600 mx-auto mb-2" />

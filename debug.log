@@ -69,3 +69,78 @@
 [2025-12-17T21:30:37.327Z] [GET Jogo] Buscando ID: 48d58b0e-f79c-48af-abae-b942a4f77ad6
 [2025-12-17T21:30:40.245Z] [GET Jogo] Buscando ID: 48d58b0e-f79c-48af-abae-b942a4f77ad6
 [2025-12-17T21:30:40.360Z] [GET Jogo] Buscando ID: 48d58b0e-f79c-48af-abae-b942a4f77ad6
+[2025-12-23T17:53:02.675Z] [Criar PIX] Requisição recebida!
+[2025-12-23T17:53:02.677Z] [Criar PIX] Body: {"bolaoId":"af5d2a7b-b43f-44d0-80fa-48753881f650","nome":"Teste 1","whatsapp":"11111111111","numeros":[1,2,3,4,17,34,38,44,51,57],"valor":50}
+[2025-12-23T17:53:03.112Z] [Criar PIX] Jogo criado com sucesso. ID: 13da3087-bc9f-4a7b-a191-1983c0cde6c4
+[2025-12-23T17:53:06.350Z] [GET Jogo] Buscando ID: 13da3087-bc9f-4a7b-a191-1983c0cde6c4
+[2025-12-23T17:53:06.510Z] [GET Jogo] Buscando ID: 13da3087-bc9f-4a7b-a191-1983c0cde6c4
+[2025-12-23T17:53:12.810Z] [GET Jogo] Buscando ID: 13da3087-bc9f-4a7b-a191-1983c0cde6c4
+[2025-12-23T17:53:12.934Z] [GET Jogo] Buscando ID: 13da3087-bc9f-4a7b-a191-1983c0cde6c4
+[2025-12-23T17:53:31.055Z] [Criar PIX] Requisição recebida!
+[2025-12-23T17:53:31.056Z] [Criar PIX] Body: {"bolaoId":"af5d2a7b-b43f-44d0-80fa-48753881f650","nome":"Teste 2","whatsapp":"22222222222","numeros":[1,4,26,27,39,41,43,44,53,54],"valor":50}
+[2025-12-23T17:53:31.737Z] [Criar PIX] Jogo criado com sucesso. ID: 035cabe9-3fa3-4ec4-9715-311273b813cc
+[2025-12-23T17:53:32.035Z] [GET Jogo] Buscando ID: 035cabe9-3fa3-4ec4-9715-311273b813cc
+[2025-12-23T17:53:32.219Z] [GET Jogo] Buscando ID: 035cabe9-3fa3-4ec4-9715-311273b813cc
+[2025-12-23T17:53:34.070Z] [GET Jogo] Buscando ID: 035cabe9-3fa3-4ec4-9715-311273b813cc
+[2025-12-23T17:53:34.247Z] [GET Jogo] Buscando ID: 035cabe9-3fa3-4ec4-9715-311273b813cc
+[2025-12-23T17:53:50.449Z] [Criar PIX] Requisição recebida!
+[2025-12-23T17:53:50.450Z] [Criar PIX] Body: {"bolaoId":"af5d2a7b-b43f-44d0-80fa-48753881f650","nome":"Teste 3","whatsapp":"33333333333","numeros":[1,11,13,20,31,34,43,49,52,58],"valor":50}
+[2025-12-23T17:53:51.123Z] [Criar PIX] Jogo criado com sucesso. ID: 690a16ec-ce24-464d-a5b2-f1dd495045d1
+[2025-12-23T17:53:51.435Z] [GET Jogo] Buscando ID: 690a16ec-ce24-464d-a5b2-f1dd495045d1
+[2025-12-23T17:53:51.591Z] [GET Jogo] Buscando ID: 690a16ec-ce24-464d-a5b2-f1dd495045d1
+[2025-12-23T17:53:55.445Z] [GET Jogo] Buscando ID: 690a16ec-ce24-464d-a5b2-f1dd495045d1
+[2025-12-23T17:53:55.600Z] [GET Jogo] Buscando ID: 690a16ec-ce24-464d-a5b2-f1dd495045d1
+[2025-12-23T17:54:19.576Z] [Criar PIX] Requisição recebida!
+[2025-12-23T17:54:19.579Z] [Criar PIX] Body: {"bolaoId":"af5d2a7b-b43f-44d0-80fa-48753881f650","nome":"Teste 4","whatsapp":"44444444444","numeros":[1,4,5,8,14,17,18,24,38,58],"valor":50}
+[2025-12-23T17:54:19.989Z] [Criar PIX] Jogo criado com sucesso. ID: ddccd214-dc00-461b-83a7-cff4ce7fa96e
+[2025-12-23T17:54:20.271Z] [GET Jogo] Buscando ID: ddccd214-dc00-461b-83a7-cff4ce7fa96e
+[2025-12-23T17:54:20.388Z] [GET Jogo] Buscando ID: ddccd214-dc00-461b-83a7-cff4ce7fa96e
+[2025-12-23T17:54:22.739Z] [GET Jogo] Buscando ID: ddccd214-dc00-461b-83a7-cff4ce7fa96e
+[2025-12-23T17:54:22.849Z] [GET Jogo] Buscando ID: ddccd214-dc00-461b-83a7-cff4ce7fa96e
+[2025-12-23T17:54:53.381Z] [Criar PIX] Requisição recebida!
+[2025-12-23T17:54:53.382Z] [Criar PIX] Body: {"bolaoId":"af5d2a7b-b43f-44d0-80fa-48753881f650","nome":"Teste 5","whatsapp":"55555555555","numeros":[5,13,17,20,26,29,38,41,44,54],"valor":50}
+[2025-12-23T17:54:53.745Z] [Criar PIX] Jogo criado com sucesso. ID: 1162d386-937a-452e-a238-dba9ac88fd90
+[2025-12-23T17:54:54.077Z] [GET Jogo] Buscando ID: 1162d386-937a-452e-a238-dba9ac88fd90
+[2025-12-23T17:54:54.187Z] [GET Jogo] Buscando ID: 1162d386-937a-452e-a238-dba9ac88fd90
+[2025-12-23T17:55:45.662Z] [GET Jogo] Buscando ID: 1162d386-937a-452e-a238-dba9ac88fd90
+[2025-12-23T17:55:45.785Z] [GET Jogo] Buscando ID: 1162d386-937a-452e-a238-dba9ac88fd90
+[2025-12-23T17:55:59.743Z] [Criar PIX] Requisição recebida!
+[2025-12-23T17:55:59.743Z] [Criar PIX] Body: {"bolaoId":"af5d2a7b-b43f-44d0-80fa-48753881f650","nome":"Teste 6","whatsapp":"66666666666","numeros":[2,6,14,22,40,43,45,53,55,60],"valor":50}
+[2025-12-23T17:56:00.104Z] [Criar PIX] Jogo criado com sucesso. ID: f290a817-cb92-4058-a354-a41b2e85a323
+[2025-12-23T17:56:00.517Z] [GET Jogo] Buscando ID: f290a817-cb92-4058-a354-a41b2e85a323
+[2025-12-23T17:56:00.621Z] [GET Jogo] Buscando ID: f290a817-cb92-4058-a354-a41b2e85a323
+[2025-12-23T17:56:02.407Z] [GET Jogo] Buscando ID: f290a817-cb92-4058-a354-a41b2e85a323
+[2025-12-23T17:56:02.523Z] [GET Jogo] Buscando ID: f290a817-cb92-4058-a354-a41b2e85a323
+[2025-12-23T17:56:18.532Z] [Criar PIX] Requisição recebida!
+[2025-12-23T17:56:18.533Z] [Criar PIX] Body: {"bolaoId":"af5d2a7b-b43f-44d0-80fa-48753881f650","nome":"Teste 7","whatsapp":"77777777777","numeros":[2,5,6,13,21,27,37,38,44,49],"valor":50}
+[2025-12-23T17:56:18.897Z] [Criar PIX] Jogo criado com sucesso. ID: 23ef56c3-b558-441b-a8e2-6262c98cf7c7
+[2025-12-23T17:56:19.198Z] [GET Jogo] Buscando ID: 23ef56c3-b558-441b-a8e2-6262c98cf7c7
+[2025-12-23T17:56:19.315Z] [GET Jogo] Buscando ID: 23ef56c3-b558-441b-a8e2-6262c98cf7c7
+[2025-12-23T17:56:21.372Z] [GET Jogo] Buscando ID: 23ef56c3-b558-441b-a8e2-6262c98cf7c7
+[2025-12-23T17:56:21.485Z] [GET Jogo] Buscando ID: 23ef56c3-b558-441b-a8e2-6262c98cf7c7
+[2025-12-23T17:56:32.595Z] [Criar PIX] Requisição recebida!
+[2025-12-23T17:56:32.596Z] [Criar PIX] Body: {"bolaoId":"af5d2a7b-b43f-44d0-80fa-48753881f650","nome":"Teste 8","whatsapp":"88888888888","numeros":[3,12,14,17,18,23,35,50,55,59],"valor":50}
+[2025-12-23T17:56:32.949Z] [Criar PIX] Jogo criado com sucesso. ID: 40e38dd1-6f07-4f4d-9a50-28bbda4ee990
+[2025-12-23T17:56:33.288Z] [GET Jogo] Buscando ID: 40e38dd1-6f07-4f4d-9a50-28bbda4ee990
+[2025-12-23T17:56:33.416Z] [GET Jogo] Buscando ID: 40e38dd1-6f07-4f4d-9a50-28bbda4ee990
+[2025-12-23T17:56:36.139Z] [GET Jogo] Buscando ID: 40e38dd1-6f07-4f4d-9a50-28bbda4ee990
+[2025-12-23T17:56:37.224Z] [GET Jogo] Buscando ID: 40e38dd1-6f07-4f4d-9a50-28bbda4ee990
+[2025-12-23T17:56:47.890Z] [Criar PIX] Requisição recebida!
+[2025-12-23T17:56:47.891Z] [Criar PIX] Body: {"bolaoId":"af5d2a7b-b43f-44d0-80fa-48753881f650","nome":"Teste 9","whatsapp":"99999999999","numeros":[3,16,22,26,33,37,43,48,53,55],"valor":50}
+[2025-12-23T17:56:48.250Z] [Criar PIX] Jogo criado com sucesso. ID: b1d7b851-1af0-403a-89f7-f0514dda365a
+[2025-12-23T17:56:48.595Z] [GET Jogo] Buscando ID: b1d7b851-1af0-403a-89f7-f0514dda365a
+[2025-12-23T17:56:48.709Z] [GET Jogo] Buscando ID: b1d7b851-1af0-403a-89f7-f0514dda365a
+[2025-12-23T17:56:51.244Z] [GET Jogo] Buscando ID: b1d7b851-1af0-403a-89f7-f0514dda365a
+[2025-12-23T17:56:51.356Z] [GET Jogo] Buscando ID: b1d7b851-1af0-403a-89f7-f0514dda365a
+[2025-12-23T17:57:05.719Z] [Criar PIX] Requisição recebida!
+[2025-12-23T17:57:05.719Z] [Criar PIX] Body: {"bolaoId":"af5d2a7b-b43f-44d0-80fa-48753881f650","nome":"Teste 10","whatsapp":"10101010101","numeros":[9,19,21,28,30,39,43,49,51,56],"valor":50}
+[2025-12-23T17:57:06.092Z] [Criar PIX] Jogo criado com sucesso. ID: 2e25e276-2736-48b0-8d9b-4856b1503013
+[2025-12-23T17:57:06.368Z] [GET Jogo] Buscando ID: 2e25e276-2736-48b0-8d9b-4856b1503013
+[2025-12-23T17:57:06.478Z] [GET Jogo] Buscando ID: 2e25e276-2736-48b0-8d9b-4856b1503013
+[2025-12-23T17:57:09.170Z] [GET Jogo] Buscando ID: 2e25e276-2736-48b0-8d9b-4856b1503013
+[2025-12-23T17:57:09.295Z] [GET Jogo] Buscando ID: 2e25e276-2736-48b0-8d9b-4856b1503013
+[2025-12-23T20:22:15.651Z] [Criar PIX] Requisição recebida!
+[2025-12-23T20:22:15.655Z] [Criar PIX] Body: {"bolaoId":"af5d2a7b-b43f-44d0-80fa-48753881f650","nome":"Teste 11","whatsapp":"11011101010","numeros":[12,19,22,23,28,37,40,42,46,60],"valor":50}
+[2025-12-23T20:22:16.169Z] [Criar PIX] Jogo criado com sucesso. ID: 7eecc4c8-670e-424d-a3fd-7ce04aa2545d
+[2025-12-23T20:22:16.699Z] [GET Jogo] Buscando ID: 7eecc4c8-670e-424d-a3fd-7ce04aa2545d
+[2025-12-23T20:22:16.884Z] [GET Jogo] Buscando ID: 7eecc4c8-670e-424d-a3fd-7ce04aa2545d

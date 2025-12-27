@@ -17,8 +17,15 @@ import {
   Ticket,
 } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
+import { DashboardSkeleton } from "@/components/admin/DashboardSkeleton";
+import { RefreshButton } from "@/components/admin/RefreshButton";
+import { revalidatePath } from "next/cache";
 
-export default async function AdminDashboardPage() {
+// Revalidar a cada 60 segundos
+export const revalidate = 60;
+
+async function DashboardContent() {
   const [stats, jogosRecentes] = await Promise.all([
     buscarEstatisticasGerais(),
     buscarJogosRecentes(5),
@@ -43,11 +50,14 @@ export default async function AdminDashboardPage() {
             Visão geral do sistema de bolões
           </p>
         </div>
-        <Link href="/admin/boloes/novo">
-          <Button className="bg-green-600 hover:bg-green-700">
-            + Novo Bolão
-          </Button>
-        </Link>
+        <div className="flex gap-3">
+          <RefreshButton />
+          <Link href="/admin/boloes/novo">
+            <Button className="bg-green-600 hover:bg-green-700">
+              + Novo Bolão
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Cards de Estatísticas */}
@@ -168,10 +178,10 @@ export default async function AdminDashboardPage() {
                     <div className="flex items-center gap-4">
                       <div
                         className={`w-10 h-10 rounded-full flex items-center justify-center ${jogo.status === "pago"
-                            ? "bg-green-100"
-                            : jogo.status === "pendente"
-                              ? "bg-yellow-100"
-                              : "bg-red-100"
+                          ? "bg-green-100"
+                          : jogo.status === "pendente"
+                            ? "bg-yellow-100"
+                            : "bg-red-100"
                           }`}
                       >
                         {jogo.status === "pago" ? (
@@ -254,5 +264,13 @@ export default async function AdminDashboardPage() {
         </Card>
       </div>
     </div>
+  );
+}
+
+export default function AdminDashboardPage() {
+  return (
+    <Suspense fallback={<DashboardSkeleton />}>
+      <DashboardContent />
+    </Suspense>
   );
 }

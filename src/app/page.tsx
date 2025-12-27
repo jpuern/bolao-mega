@@ -105,7 +105,7 @@ export default async function HomePage() {
                   <div>
                     <p className="text-gray-600 text-sm font-medium">Bolão Ativo</p>
                     <p className="text-4xl font-bold text-gray-900">
-                      Bolão #{bolaoAtivo.numero}
+                      Bolão #{bolaoAtivo.concurso || bolaoAtivo.numero || 'N/A'}
                     </p>
                     <p className="text-gray-600 text-sm mt-1">{bolaoAtivo.nome}</p>
                   </div>

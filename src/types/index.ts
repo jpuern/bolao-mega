@@ -3,12 +3,15 @@
 export interface Bolao {
   id: string;
   numero: number;
+  concurso?: string; // Campo do banco (varchar)
   nome: string;
-  valor_jogo: number;
-  taxa_organizador: number;
-  data_inicio: string;
-  data_encerramento: string;
+  valor_cota: number;
+  taxa_organizador?: number; // Não existe no banco, mas usado no form
+  data_sorteio: string; // Campo real do banco
+  data_inicio?: string; // Não existe no banco, mas usado no form
+  data_encerramento?: string; // Não existe no banco, mas usado no form
   status: "ativo" | "encerrado" | "cancelado";
+  numeros_sorteados?: number[]; // Campo do banco
   created_at: string;
   updated_at?: string;
 }
